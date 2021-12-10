@@ -112,7 +112,7 @@ object detection은 Region proposal과 classification이 순차적으로 이루�
 
 ![trend of the learned scale ratio](../../.gitbook/assets/scale_ratio.png)
 
-Scale ration는 학습된 고해상도 가중치를 저해상도 가중치로 나눈 값을 의미하며 해당 ratio에 대한 그래프는 왼쪽과 같습니다. 집중적으로 봐야 할 부분은 가장 고해상도 feature map에 있는 level 5의 scale ratio의 분포가 저해상도 feature map에 가도록 되어 있고 가장 저해상도 feature map에 있는 level 1의 scale ratio의 분포는 고해상도 feature map에 가도록 되어 있습니다. 즉 해상도가 높으면 저해상도에 가중치를 두고 해상도가 낮으면 고해상도에 가중치를 두어 서로 다른 level에서의 feature map들간의 gap을 줄일 수 있습니다.
+Scale ratio는 학습된 고해상도 가중치를 저해상도 가중치로 나눈 값을 의미하며 해당 ratio에 대한 그래프는 왼쪽과 같습니다. 집중적으로 봐야 할 부분은 가장 고해상도 feature map에 있는 level 5의 scale ratio의 분포가 저해상도 feature map에 가도록 되어 있고 가장 저해상도 feature map에 있는 level 1의 scale ratio의 분포는 고해상도 feature map에 가도록 되어 있습니다. 즉 해상도가 높으면 저해상도에 가중치를 두고 해상도가 낮으면 고해상도에 가중치를 두어 서로 다른 level에서의 feature map들간의 gap을 줄일 수 있습니다.
 
 다음으로 서로 다른 개수의 attention module을 적용했을 때의 결과를 시각화한 것입니다. Block의 개수가 많아질수록 정확하게 객체들의 공간 위치를 구별하는 것을 확인할 수 있습니다. 이러한 visualization으로 spatial-aware attention learning의 효과를 설명할 수 있다고 합니다.
 
