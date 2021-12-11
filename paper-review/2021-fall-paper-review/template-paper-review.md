@@ -77,11 +77,11 @@ $$\pi_S (F) \cdot F = \frac{1}{L} \sum_{l=1}^L \sum_{k=1}^K w_{l,k} \cdot F(l; p
 
 마지막으로 task-aware attention입니다.
 
-$$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C + \beta^1 (F), \alpha^2 (F) \cdot F_C + \beta^2 (F)$$
+$$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C + \beta^1 (F), \alpha^2 (F) \cdot F_C + \beta^2 (F))$$
 
 ($$F_c$$는 c-th channel의 feature slice를 의미하고 $$[\alpha^1, \alpha^2, \beta^1, \beta^2]^T = \theta ( \cdot )$$은 activation thresholds를 조절하는 hyper function입니다.)
 
-해당 식은 적절한 channels of features를 on, off 스위칭합니다. activation threshold를 제어하는 hyper function 세타는 L x S 차원에 대한 global average pooling을 하여 dimensionality를 낮추고 2번의 fully connected를 진행한 뒤에 normalize를 시키고 shifted sigmoid function을 통하여 [-1,1] 사이의 출력값이 나오게 합니다. 이러한 출력값은 bounding box, center point, corner point 등 각 task에 대한 값이 담겨져 있습니다.
+해당 식은 적절한 channels of features를 on, off 스위칭합니다. activation threshold를 제어하는 hyper function 세타는 L x S 차원에 대한 global average pooling을 하여 dimensionality를 낮추고 2번의 fully connected를 진행한 뒤에 normalize를 시키고 shifted sigmoid function을 통하여 [-1, 1] 사이의 출력값이 나오게 합니다. 이러한 출력값은 bounding box, center point, corner point 등 각 task에 대한 값이 담겨져 있습니다.
 
 다음은 Dynamic Head Block의 자세한 구조입니다. 앞서 수학적으로 설명하였기에 넘어가도록 하겠습니다.
 
@@ -93,16 +93,25 @@ $$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C + \beta^1 (F), \alpha^2 (F) \cd
 
 ![One stage detector](../../.gitbook/assets/one-stage_detector.png)
 
-다음으로 two-stage detector의 경우 one-stage detector와 사용 방법이 약간 다릅니다. Two-stage detector의 경우 객체 표현 방식이 다양한 one-stage detector와는 다르게 box regressor만 사용 가능합니다. Two-stage detector에 dynamic head를 적용할 때 scale-awareness, spatial-awareness attention을 거친 뒤에 roi pooling을 적용하고 task-aware attention을 거치게 됩니다. 
+다음으로 two-stage detector의 경우 one-stage detector와 사용 방법이 약간 다릅니다. Two-stage detector의 경우 객체 표현 방식이 다양한 one-stage detector와는 다르게 box regressor만 사용 가능합니다. Two-stage detector에 dynamic head를 적용할 때 scale-awareness, spatial-awareness attention을 거친 뒤에 ROI pooling을 적용하고 task-aware attention을 거치게 됩니다. 
 
 ![Two stage detector](../../.gitbook/assets/two-stage_detector.png)
 
 
 ## 4. Experiment & Result
 
+### Experimental Setup
+
+- Dataset: MS-COCO dataest (training, validation, test에 사용한 이미지 데이터는 각각 118k, 5k, 41k개입니다.)
+- Training:
+     - backbone: ResNet-50
+     - learning rate: 0.02 with weight decay = 0.0001 and momentum = 0.9 (training epoch가 67%와 89%사이일 때 learning rate = 0.01)
+     - 32GB의 memory가 있는 8개의 V100 GPU로 구성된 하나의 compute node를 사용하여 학습
+
+
 ### Ablation Study
 
-다음은 성능 비교표입니다. 3개의 attention 중에 하나만 추가되어도 average precision이 향상되는 것을 확인할 수 있습니다. 그 중에서 spatial aware attention을 사용할 때 가장 높은 성능 상승을 이끌어 내었는데 저자는 3개의 attention function 중 spatial attention function에 해당하는 차원이 지배적이기 때문이라고 하였습니다.
+다음은 성능 비교표입니다. $$AP_50$$, $$AP_75$$은 각각 정답으로 인정되는 IOU가 0.5 이상, 0.75 이상인 경우에 대한 예측의 평균 정확도를 의미합니다. 또한, AP는 IOU가 0.5 이상, 0.95 이하인 경우에 대한 예측의 평균 정확도입니다. 추가적으로 $$AP_S$$, $$AP_M$$, $$AP_L$$은 각각 크기가 322보다 작은 물체, 크기가 322와 962 사이인 물체, 크기가 962보다 큰 물체를 detecting할 수 있는지에 대한 예측의 평균 정확도를 나타냅니다. 3개의 attention 중에 하나만 추가되어도 average precision이 향상되는 것을 확인할 수 있습니다. 그 중에서 spatial aware attention을 사용할 때 가장 높은 성능 상승을 이끌어 내었는데 저자는 3개의 attention function 중 spatial attention function의 dominant dimensionality 때문이라고 하였습니다.
 
 ![Ablation study table](../../.gitbook/assets/ablation_study.png)
 
@@ -110,14 +119,14 @@ $$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C + \beta^1 (F), \alpha^2 (F) \cd
 
 ![trend of the learned scale ratio](../../.gitbook/assets/scale_ratio.png)
 
-Scale ratio는 학습된 고해상도 가중치를 저해상도 가중치로 나눈 값을 의미하며 해당 ratio에 대한 그래프는 왼쪽과 같습니다. 집중적으로 봐야 할 부분은 가장 고해상도 feature map에 있는 level 5의 scale ratio의 분포가 저해상도 feature map에 가도록 되어 있고 가장 저해상도 feature map에 있는 level 1의 scale ratio의 분포는 고해상도 feature map에 가도록 되어 있습니다. 즉 해상도가 높으면 저해상도에 가중치를 두고 해상도가 낮으면 고해상도에 가중치를 두어 서로 다른 level에서의 feature map들간의 gap을 줄일 수 있습니다.
+Scale ratio는 학습된 고해상도 가중치를 저해상도 가중치로 나눈 값을 의미하며 해당 ratio에 대한 그래프는 위와 같습니다. 집중적으로 봐야 할 부분은 가장 고해상도 feature map에 있는 level 5의 scale ratio의 분포가 저해상도 feature map에 가도록 되어 있고 가장 저해상도 feature map에 있는 level 1의 scale ratio의 분포는 고해상도 feature map에 가도록 되어 있습니다. 즉 해상도가 높으면 저해상도에 가중치를 두고 해상도가 낮으면 고해상도에 가중치를 두어 서로 다른 level에서의 feature map들간의 gap을 줄일 수 있습니다.
 
 다음으로 서로 다른 개수의 attention module을 적용했을 때의 결과를 시각화한 것입니다. Block의 개수가 많아질수록 정확하게 객체들의 공간 위치를 구별하는 것을 확인할 수 있습니다. 이러한 visualization으로 spatial-aware attention learning의 효과를 설명할 수 있다고 합니다.
 
 ![visualization](../../.gitbook/assets/visualization.png)
 
 
-다음은 Head의 depth에 따른 성능을 표로 나타낸 것입니다. Block의 개수가 6개일 때 가장 효과가 좋으나 계산량의 경우 Baseline보다 21.5GFLOPs만큼 증가하였습니다. 하지만 해당 계산량의 경우 backbone에서 이루어지는 계산량에 비하면 무시할 만한 수준이라고 합니다.
+다음은 Head의 depth에 따른 성능을 표로 나타낸 것입니다. Block의 개수가 6개일 때 가장 효과가 좋으나 계산량의 경우 Baseline보다 21.5GFLOPs만큼 증가하였습니다. (여기서 FLOPS는 컴퓨터의 성능을 수치로 나타낼 수 사용하는 단위로 컴퓨터가 1초동안 수행할 수 있는 부동소수점 연산의 횟수를 기준으로 삼습니다.) 하지만 해당 계산량의 경우 backbone에서 이루어지는 계산량에 비하면 무시할 만한 수준이라고 합니다.
 
 ![Efficiency on the Depth of Head](../../.gitbook/assets/efficiency_on_the_depth_of_head.png)
 
@@ -151,8 +160,6 @@ Note that you can attach tables and images, but you don't need to deliver all ma
 
 
 ### Take home message \(오늘의 교훈\)
-
-Please provide one-line \(or 2~3 lines\) message, which we can learn from this paper.
 
 > The harder you work, the more likely you can reach the goal.
 >
