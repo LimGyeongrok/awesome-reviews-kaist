@@ -22,7 +22,7 @@ Good Object Detection Head가 가져야 할 1번째 조건은 바로 head는 sca
 
 ### Scale-awareness
 
-대부분의 이미지 안에 존재하는 개체들은 크기가 제각각 다양하기 때문에 많은 연구로부터 object detection을 진행할 때 크기 인식의 중요성이 부각되어 왔습니다. Feature pyramid는 down-sampling된 feature의 pyramid를 연결하여 image pyramid에 비해 효율성을 향상시켰으며 현재 object detection에서 일반적으로 사용하는 요소가 되었습니다. 하지만 다른 level에서 추출되는 feature간에는 눈에 띄는 semantic gap이 존재하게 되는데 이러한 불일치를 해결하기 위해 feature pyramid에서 각각의 feature들을 sampling하여 균형을 맞추어 gap을 줄이고자 하였습니다. 이 논문에서는 detection head에 scale-aware attention을 추가하여 다양한 level의 feature들의 중요성을 판단하여 semantic gap을 줄일 수 있도록 하였습니다.
+대부분의 이미지 안에 존재하는 개체들은 크기가 제각각 다양하기 때문에 많은 연구로부터 object detection을 진행할 때 크기 인식의 중요성이 부각되어 왔습니다. Feature pyramid network(https://arxiv.org/pdf/1612.03144.pdf)는 down-sampling된 feature의 pyramid를 연결하여 image pyramid에 비해 효율성을 향상시켰으며 현재 object detection에서 일반적으로 사용하는 요소가 되었습니다. 하지만 다른 level에서 추출되는 feature간에는 눈에 띄는 semantic gap이 존재하게 됩니다.  이 때 semantic gap은 neural Network에서 low level에서는 image의 edge와 같은 부분을 보는데 반해 high level에서는 image의 contextual한 부분을 중점적으로 detectinig하는 것처럼 각 level 사이에 존재하는 feature map의 차이를 의미합니다. 이러한 불일치를 해결하기 위해 feature pyramid에서 각각의 feature들을 sampling하여 균형을 맞추어 gap을 줄이고자 하였습니다. 이 논문에서는 detection head에 scale-aware attention을 추가하여 다양한 level의 feature들의 중요성을 판단하여 semantic gap을 줄일 수 있도록 하였습니다.
 
 ### Spatial-awareness
 
@@ -30,7 +30,7 @@ Good Object Detection Head가 가져야 할 1번째 조건은 바로 head는 sca
 
 ### Task-awareness
 
-object detection은 Region proposal과 classification이 순차적으로 이루어지는 2-stage detector, region proposal과 classification이 동시에 일어나는 1-stage detector로 나뉘어지며 객체를 감지하는 방법에 따라서 객체가 존재하는 부분에 bounding box를 치는 방법, 객체의 중심점을 잡는 방법, 객체의 특징점들을 찾아 그 점들을 이어 객체를 감지하는 방법 등 다양합니다. 이 논문에서는 detection head에 task-aware attention을 추가하여 1-stage / 2-stage detector, bounding box/ center point/ key point 등 다양한 task에 적용 가능하도록 하였습니다.
+object detection은 Region proposal과 classification이 순차적으로 이루어지는 R-CNN(http://islab.ulsan.ac.kr/files/announcement/513/rcnn_pami.pdf)과 같은 2-stage detector, region proposal과 classification이 동시에 일어나는 YOLO(https://arxiv.org/pdf/1506.02640.pdf)와 같은 1-stage detector로 나뉘어지며 객체를 감지하는 방법에 따라서 객체가 존재하는 부분에 bounding box를 치는 방법, 객체의 중심점을 잡는 방법, 객체의 특징점들을 찾아 그 점들을 이어 객체를 감지하는 방법 등 다양합니다. 이 논문에서는 detection head에 task-aware attention을 추가하여 1-stage / 2-stage detector, bounding box/ center point/ key point 등 다양한 task에 적용 가능하도록 하였습니다.
 
 
 ## 3. Our Approach
