@@ -51,19 +51,18 @@ object detection은 Region proposal과 classification이 순차적으로 이루�
 우선 self-attention W(F)는 다음과 같이 구현됩니다. 파이는 attention function이며 저자는 단순하게 attention function을 fully connected layer로 구현하였습니다.
 
 $$W(F) = \pi (F) \cdot F$$
-<img src="https://render.githubusercontent.com/render/math?math=W(F) = \pi (F) \cdot F">
 
 앞서 말했듯이 한번에 3가지 측면에 대해 처리하고 싶었지만 계산량 등의 이유로 다음과 같이 하나씩 attention을 적용하였습니다. 
 
-<img src="https://render.githubusercontent.com/render/math?math=W(F) = \pi_C (\pi _S (\pi _L (F) \cdot F) \cdot F) \cdot F">
+$$W(F) = \pi_C (\pi _S (\pi _L (F) \cdot F) \cdot F) \cdot F$$
 
 먼저 scale-aware attention입니다.
 
-<img src="https://render.githubusercontent.com/render/math?math=\pi_L (F) \cdot F = \sigma (f (\frac{1}{SC} \sum_{S,C} F)) \cdot F">
+$$\pi_L (F) \cdot F = \sigma (f (\frac{1}{SC} \sum_{S,C} F)) \cdot F$$
 
 우선 텐서 F의 Level당 Space, Channel 평균값을 구합니다.
 그리고 이 평균값을 1 x 1 convolution layer에 넣어 Fully-connected 연산을 한 뒤 hard-sigmoid function에 넣습니다.
-(여기서 <img src="https://render.githubusercontent.com/render/math?math=f(\cdot )">은 1x1 convolutional layer로 근사된 linear function을 의미하며 <img src="https://render.githubusercontent.com/render/math?math=\sigma (x) = max(0,min(1,\frac{x+1}{2}))">는 다음과 같은 그래프의 hard-sigmoid function을 나타냅니다.)
+(여기서  $$f(\cdot)$$은 1x1 convolutional layer로 근사된 linear function을 의미하며 $$\sigma (x) = max(0,min(1,\frac{x+1}{2})$$는 다음과 같은 그래프의 hard-sigmoid function을 나타냅니다.)
 
 ![hard sigmoid function graph](../../.gitbook/assets/hard_sigmoid.png)
 
@@ -71,16 +70,16 @@ $$W(F) = \pi (F) \cdot F$$
 
 두 번째로 spatial-aware attention입니다.
 
-<img src="https://render.githubusercontent.com/render/math?math=\pi_S (F) \cdot F = \frac{1}{L} \sum_{l=1}^L \sum_{k=1}^K w_{l,k} \cdot F(l \dot , p_k %2B \varDelta p_k \dot , c) \cdot \varDelta m_k">
+$$\pi_S (F) \cdot F = \frac{1}{L} \sum_{l=1}^L \sum_{k=1}^K w_{l,k} \cdot F(l \dot , p_k %2B \varDelta p_k \dot , c) \cdot \varDelta m_k$$
 
 해당 식을 보면 Deformable convolution과 유사한 형태로 식이 세워진 것을 보면 offset pk에 의해 특성을 추출할 객체의 모양에 맞게 kernel이 변환되어 연산을 진행하는 것을 알 수 있습니다. 
 저자는 위치, level에 상관없이 공통적으로 드러나는 객체의 feature을 강조하기 위해 사용하였다고 합니다.
 
 마지막으로 task-aware attention입니다.
 
-<img src="https://render.githubusercontent.com/render/math?math=\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C %2B \beta^1 (F), \alpha^2 (F) \cdot F_C %2B \beta^2 (F)">
+$$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C %2B \beta^1 (F), \alpha^2 (F) \cdot F_C %2B \beta^2 (F)$$
 
-(<img src="https://render.githubusercontent.com/render/math?math=F_c">는 c-th channel의 feature slice를 의미하고 <img src="https://render.githubusercontent.com/render/math?math=[\alpha^1, \alpha^2, \beta^1, \beta^2]^T = \theta ( \cdot )">은 activation thresholds를 조절하는 hyper function입니다.)
+($$F_c$$는 c-th channel의 feature slice를 의미하고 $$[\alpha^1, \alpha^2, \beta^1, \beta^2]^T = \theta ( \cdot )$$은 activation thresholds를 조절하는 hyper function입니다.)
 
 해당 식은 적절한 channels of features를 on, off 스위칭합니다. activation threshold를 제어하는 hyper function 세타는 L x S 차원에 대한 global average pooling을 하여 dimensionality를 낮추고 2번의 fully connected를 진행한 뒤에 normalize를 시키고 shifted sigmoid function을 통하여 [-1,1] 사이의 출력값이 나오게 합니다. 이러한 출력값은 bounding box, center point, corner point 등 각 task에 대한 값이 담겨져 있습니다.
 
