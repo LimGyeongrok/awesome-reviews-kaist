@@ -70,14 +70,14 @@ $$\pi_L (F) \cdot F = \sigma (f (\frac{1}{SC} \sum_{S,C} F)) \cdot F$$
 
 두 번째로 spatial-aware attention입니다.
 
-$$\pi_S (F) \cdot F = \frac{1}{L} \sum_{l=1}^L \sum_{k=1}^K w_{l,k} \cdot F(l \dot , p_k %2B \varDelta p_k \dot , c) \cdot \varDelta m_k$$
+$$\pi_S (F) \cdot F = \frac{1}{L} \sum_{l=1}^L \sum_{k=1}^K w_{l,k} \cdot F(l; p_k + \varDelta p_k; c) \cdot \varDelta m_k$$
 
 해당 식을 보면 Deformable convolution과 유사한 형태로 식이 세워진 것을 보면 offset pk에 의해 특성을 추출할 객체의 모양에 맞게 kernel이 변환되어 연산을 진행하는 것을 알 수 있습니다. 
 저자는 위치, level에 상관없이 공통적으로 드러나는 객체의 feature을 강조하기 위해 사용하였다고 합니다.
 
 마지막으로 task-aware attention입니다.
 
-$$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C %2B \beta^1 (F), \alpha^2 (F) \cdot F_C %2B \beta^2 (F)$$
+$$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C + \beta^1 (F), \alpha^2 (F) \cdot F_C + \beta^2 (F)$$
 
 ($$F_c$$는 c-th channel의 feature slice를 의미하고 $$[\alpha^1, \alpha^2, \beta^1, \beta^2]^T = \theta ( \cdot )$$은 activation thresholds를 조절하는 hyper function입니다.)
 
