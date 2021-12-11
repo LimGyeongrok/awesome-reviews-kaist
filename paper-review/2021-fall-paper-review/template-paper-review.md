@@ -150,16 +150,6 @@ State of the Art에 등록된 네트워크들과 성능을 비교한 결과입�
 
 결론적으로 해당 dynamic head는 scale-aware, spatial-aware, task-aware attention을 하나의 framework에 담았습니다. 다른 object detector에 추가하여 성능 향상을 이끌어 낸 것도 확인했습니다. 저자는 모든 측면을 한번에 attention하는 model을 개발하는 것, 더 다양한 측면의 attention을 head에 넣는 것을 통해 성능을 향상시킬 방법을 찾는 것이 앞으로의 task라고 하였습니다.
 
-{% hint style="info" %}
-If you are writing **Author's note**, please share your know-how \(e.g., implementation details\)
-{% endhint %}
-
-This section should cover experimental setup and results.  
-Please focus on how the authors of paper demonstrated the superiority / effectiveness of the proposed method.
-
-Note that you can attach tables and images, but you don't need to deliver all materials included in the original paper.
-
-
 ### Take home message \(오늘의 교훈\)
 
 > 그 동안 다른 object detection 논문들을 읽어보았지만 head만 바꿔도 성능이 달라진다는 것을 인지하지 못하고 있었습니다. Head의 성능이 Object Detector의 성능을 결정한다는 점이 상당히 인상깊었습니다. 
@@ -172,6 +162,12 @@ Note that you can attach tables and images, but you don't need to deliver all ma
 
 - KAIST EE
 - E-mail: gr87@kaist.ac.kr
+
+### Reviewer
+
+1. Korean name (English name): Affiliation / Contact information
+2. Korean name (English name): Affiliation / Contact information
+3. …
 
 ## Reference & Additional materials
 
