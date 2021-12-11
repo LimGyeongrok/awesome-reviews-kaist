@@ -112,7 +112,7 @@ $$\pi_C (F) \cdot F = max(\alpha^1 (F) \cdot F_C + \beta^1 (F), \alpha^2 (F) \cd
 
 ### Ablation Study
 
-다음은 성능 비교표입니다. $$AP_(50)$$, $$AP_(75)$$은 각각 정답으로 인정되는 IOU가 0.5 이상, 0.75 이상인 경우에 대한 예측의 평균 정확도를 의미합니다. 또한, AP는 IOU가 0.5 이상, 0.95 이하인 경우에 대한 예측의 평균 정확도입니다. 추가적으로 $$AP_S$$, $$AP_M$$, $$AP_L$$은 각각 크기가 322보다 작은 물체, 크기가 322와 962 사이인 물체, 크기가 962보다 큰 물체를 detecting할 수 있는지에 대한 예측의 평균 정확도를 나타냅니다. 3개의 attention 중에 하나만 추가되어도 average precision이 향상되는 것을 확인할 수 있습니다. 그 중에서 spatial aware attention을 사용할 때 가장 높은 성능 상승을 이끌어 내었는데 저자는 3개의 attention function 중 spatial attention function의 dominant dimensionality 때문이라고 하였습니다. (Level, Space, Channel 중에서 Space의 dimensionality가 가장 높기 때문입니다.)
+다음은 성능 비교표입니다. $$AP_{50}$$, $$AP_{75}$$은 각각 정답으로 인정되는 IOU가 0.5 이상, 0.75 이상인 경우에 대한 예측의 평균 정확도를 의미합니다. 또한, AP는 IOU가 0.5 이상, 0.95 이하인 경우에 대한 예측의 평균 정확도입니다. 추가적으로 $$AP_S$$, $$AP_M$$, $$AP_L$$은 각각 크기가 322보다 작은 물체, 크기가 322와 962 사이인 물체, 크기가 962보다 큰 물체를 detecting할 수 있는지에 대한 예측의 평균 정확도를 나타냅니다. 3개의 attention 중에 하나만 추가되어도 average precision이 향상되는 것을 확인할 수 있습니다. 그 중에서 spatial aware attention을 사용할 때 가장 높은 성능 상승을 이끌어 내었는데 저자는 3개의 attention function 중 spatial attention function의 dominant dimensionality 때문이라고 하였습니다. (Level, Space, Channel 중에서 Space의 dimensionality가 가장 높기 때문입니다.)
 
 ![Ablation study table](../../.gitbook/assets/ablation_study.png)
 
